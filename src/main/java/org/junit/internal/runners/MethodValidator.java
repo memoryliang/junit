@@ -1,27 +1,26 @@
 package org.junit.internal.runners;
 
+import org.junit.*;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
+/**
+ * 方法验证类
+ */
 public class MethodValidator {
   private final TestIntrospector fIntrospector;
 
-  private final List<Throwable> fErrors= new ArrayList<Throwable>();
+  private final List<Throwable> fErrors = new ArrayList<Throwable>();
 
   private final Class<?> fTestClass;
 
   public MethodValidator(Class<?> testClass) {
-    fTestClass= testClass;
-    fIntrospector= new TestIntrospector(testClass);
+    fTestClass = testClass;
+    fIntrospector = new TestIntrospector(testClass);
   }
 
   public void validateInstanceMethods() {
@@ -42,11 +41,15 @@ public class MethodValidator {
     return fErrors;
   }
 
+
   public void assertValid() throws InitializationError {
     if (!fErrors.isEmpty())
       throw new InitializationError(fErrors);
   }
 
+  /**
+   * 验证是否有无参public构造函数
+   */
   public void validateNoArgConstructor() {
     try {
       fTestClass.getConstructor();
@@ -55,24 +58,25 @@ public class MethodValidator {
     }
   }
 
-  private void validateTestMethods(Class<? extends Annotation> annotation,
-                                   boolean isStatic) {
-    List<Method> methods= fIntrospector.getTestMethods(annotation);
+  /**
+   * 验证测试方法
+   *
+   * @param annotation 注解
+   * @param isStatic
+   */
+  private void validateTestMethods(Class<? extends Annotation> annotation, boolean isStatic) {
+    List<Method> methods = fIntrospector.getTestMethods(annotation);
     for (Method each : methods) {
       if (Modifier.isStatic(each.getModifiers()) != isStatic) {
-        String state= isStatic ? "should" : "should not";
-        fErrors.add(new Exception("Method " + each.getName() + "() "
-            + state + " be static"));
+        String state = isStatic ? "should" : "should not";
+        fErrors.add(new Exception("Method " + each.getName() + "() " + state + " be static"));
       }
       if (!Modifier.isPublic(each.getModifiers()))
-        fErrors.add(new Exception("Method " + each.getName()
-            + " should be public"));
+        fErrors.add(new Exception("Method " + each.getName() + " should be public"));
       if (each.getReturnType() != Void.TYPE)
-        fErrors.add(new Exception("Method " + each.getName()
-            + " should be void"));
+        fErrors.add(new Exception("Method " + each.getName() + " should be void"));
       if (each.getParameterTypes().length != 0)
-        fErrors.add(new Exception("Method " + each.getName()
-            + " should have no parameters"));
+        fErrors.add(new Exception("Method " + each.getName() + " should have no parameters"));
     }
   }
 }

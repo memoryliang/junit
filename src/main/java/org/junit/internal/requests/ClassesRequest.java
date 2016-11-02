@@ -1,6 +1,3 @@
-/**
- *
- */
 package org.junit.internal.requests;
 
 import org.junit.internal.runners.CompositeRunner;
@@ -12,15 +9,15 @@ public class ClassesRequest extends Request {
   private final String fName;
 
   public ClassesRequest(String name, Class... classes) {
-    fClasses= classes;
-    fName= name;
+    fClasses = classes;
+    fName = name;
   }
 
   @Override
   public Runner getRunner() {
-    CompositeRunner runner= new CompositeRunner(fName);
+    CompositeRunner runner = new CompositeRunner(fName);
     for (Class<?> each : fClasses) {
-      Runner childRunner= Request.aClass(each).getRunner();
+      Runner childRunner = Request.aClass(each).getRunner();
       if (childRunner != null)
         runner.add(childRunner);
     }

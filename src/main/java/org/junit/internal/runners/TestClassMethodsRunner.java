@@ -1,30 +1,30 @@
 package org.junit.internal.runners;
 
+import org.junit.Test;
+import org.junit.runner.Description;
+import org.junit.runner.Runner;
+import org.junit.runner.manipulation.*;
+import org.junit.runner.notification.Failure;
+import org.junit.runner.notification.RunNotifier;
+
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
-import org.junit.Test;
-import org.junit.runner.Description;
-import org.junit.runner.Runner;
-import org.junit.runner.manipulation.Filter;
-import org.junit.runner.manipulation.Filterable;
-import org.junit.runner.manipulation.NoTestsRemainException;
-import org.junit.runner.manipulation.Sortable;
-import org.junit.runner.manipulation.Sorter;
-import org.junit.runner.notification.RunNotifier;
-import org.junit.runner.notification.Failure;
-
+/**
+ *  @Test 注解的测试方法
+ *
+ */
 public class TestClassMethodsRunner extends Runner implements Filterable, Sortable {
   private final List<Method> fTestMethods;
   private final Class<?> fTestClass;
 
   // This assumes that some containing runner will perform validation of the test methods
   public TestClassMethodsRunner(Class<?> klass) {
-    fTestClass= klass;
-    fTestMethods= new TestIntrospector(getTestClass()).getTestMethods(Test.class);
+    fTestClass = klass;
+    fTestMethods = new TestIntrospector(getTestClass()).getTestMethods(Test.class);
   }
 
   @Override
@@ -45,8 +45,8 @@ public class TestClassMethodsRunner extends Runner implements Filterable, Sortab
 
   @Override
   public Description getDescription() {
-    Description spec= Description.createSuiteDescription(getName());
-    List<Method> testMethods= fTestMethods;
+    Description spec = Description.createSuiteDescription(getName());
+    List<Method> testMethods = fTestMethods;
     for (Method method : testMethods)
       spec.addChild(methodDescription(method));
     return spec;
@@ -63,7 +63,7 @@ public class TestClassMethodsRunner extends Runner implements Filterable, Sortab
   protected void invokeTestMethod(Method method, RunNotifier notifier) {
     Object test;
     try {
-      test= createTest();
+      test = createTest();
     } catch (Exception e) {
       testAborted(notifier, methodDescription(method));
       return;
@@ -84,8 +84,8 @@ public class TestClassMethodsRunner extends Runner implements Filterable, Sortab
   }
 
   public void filter(Filter filter) throws NoTestsRemainException {
-    for (Iterator iter= fTestMethods.iterator(); iter.hasNext();) {
-      Method method= (Method) iter.next();
+    for (Iterator iter = fTestMethods.iterator(); iter.hasNext(); ) {
+      Method method = (Method) iter.next();
       if (!filter.shouldRun(methodDescription(method)))
         iter.remove();
     }

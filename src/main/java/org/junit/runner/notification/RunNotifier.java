@@ -1,11 +1,11 @@
 package org.junit.runner.notification;
 
+import org.junit.runner.Description;
+import org.junit.runner.Result;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import org.junit.runner.Description;
-import org.junit.runner.Result;
 
 /**
  * If you write custom runners, you may need to notify JUnit of your progress running tests.
@@ -15,34 +15,21 @@ import org.junit.runner.Result;
  * to a separate class since they should only be called once per run.
  */
 public class RunNotifier {
-  private List<RunListener> fListeners= new ArrayList<RunListener>();
-  private boolean fPleaseStop= false;
+  private List<RunListener> fListeners = new ArrayList<RunListener>();
+  private boolean fPleaseStop = false;
 
-  /** Internal use only
+  /**
+   * Internal use only
    */
   public void addListener(RunListener listener) {
     fListeners.add(listener);
   }
 
-  /** Internal use only
+  /**
+   * Internal use only
    */
   public void removeListener(RunListener listener) {
     fListeners.remove(listener);
-  }
-
-  private abstract class SafeNotifier {
-    void run() {
-      for (Iterator<RunListener> all= fListeners.iterator(); all.hasNext();) {
-        try {
-          notifyListener(all.next());
-        } catch (Exception e) {
-          all.remove(); // Remove the offending listener first to avoid an infinite loop
-          fireTestFailure(new Failure(Description.TEST_MECHANISM, e));
-        }
-      }
-    }
-
-    abstract protected void notifyListener(RunListener each) throws Exception;
   }
 
   /**
@@ -53,7 +40,9 @@ public class RunNotifier {
       @Override
       protected void notifyListener(RunListener each) throws Exception {
         each.testRunStarted(description);
-      };
+      }
+
+      ;
     }.run();
   }
 
@@ -65,12 +54,15 @@ public class RunNotifier {
       @Override
       protected void notifyListener(RunListener each) throws Exception {
         each.testRunFinished(result);
-      };
+      }
+
+      ;
     }.run();
   }
 
   /**
    * Invoke to tell listeners that an atomic test is about to start.
+   *
    * @param description the description of the atomic test (generally a class and method name)
    * @throws StoppedByUserException thrown if a user has requested that the test run stop
    */
@@ -81,12 +73,15 @@ public class RunNotifier {
       @Override
       protected void notifyListener(RunListener each) throws Exception {
         each.testStarted(description);
-      };
+      }
+
+      ;
     }.run();
   }
 
   /**
    * Invoke to tell listeners that an atomic test failed.
+   *
    * @param failure the description of the test that failed and the exception thrown
    */
   public void fireTestFailure(final Failure failure) {
@@ -94,12 +89,13 @@ public class RunNotifier {
       @Override
       protected void notifyListener(RunListener each) throws Exception {
         each.testFailure(failure);
-      };
+      }
     }.run();
   }
 
   /**
    * Invoke to tell listeners that an atomic test was ignored.
+   *
    * @param description the description of the ignored test
    */
   public void fireTestIgnored(final Description description) {
@@ -107,13 +103,14 @@ public class RunNotifier {
       @Override
       protected void notifyListener(RunListener each) throws Exception {
         each.testIgnored(description);
-      };
+      }
     }.run();
   }
 
   /**
    * Invoke to tell listeners that an atomic test finished. Always invoke <code>fireTestFinished()</code>
    * if you invoke <code>fireTestStarted()</code> as listeners are likely to expect them to come in pairs.
+   *
    * @param description the description of the test that finished
    */
   public void fireTestFinished(final Description description) {
@@ -121,7 +118,9 @@ public class RunNotifier {
       @Override
       protected void notifyListener(RunListener each) throws Exception {
         each.testFinished(description);
-      };
+      }
+
+      ;
     }.run();
   }
 
@@ -132,7 +131,7 @@ public class RunNotifier {
    * to be shared amongst the many runners involved.
    */
   public void pleaseStop() {
-    fPleaseStop= true;
+    fPleaseStop = true;
   }
 
   /**
@@ -140,5 +139,23 @@ public class RunNotifier {
    */
   public void addFirstListener(RunListener listener) {
     fListeners.add(0, listener);
+  }
+
+  /**
+   * 抽象内部类
+   */
+  private abstract class SafeNotifier {
+    void run() {
+      for (Iterator<RunListener> all = fListeners.iterator(); all.hasNext(); ) {
+        try {
+          notifyListener(all.next());
+        } catch (Exception e) {
+          all.remove(); // Remove the offending listener first to avoid an infinite loop
+          fireTestFailure(new Failure(Description.TEST_MECHANISM, e));
+        }
+      }
+    }
+
+    abstract protected void notifyListener(RunListener each) throws Exception;
   }
 }

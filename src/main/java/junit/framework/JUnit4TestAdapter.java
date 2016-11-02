@@ -1,10 +1,10 @@
 package junit.framework;
 
-import java.util.List;
-
 import org.junit.runner.Description;
 import org.junit.runner.Request;
 import org.junit.runner.Runner;
+
+import java.util.List;
 
 public class JUnit4TestAdapter implements Test {
   private final Class<?> fNewTestClass;
@@ -17,10 +17,10 @@ public class JUnit4TestAdapter implements Test {
     this(newTestClass, JUnit4TestAdapterCache.getDefault());
   }
 
-  public JUnit4TestAdapter(final Class<?> newTestClass,
-                           JUnit4TestAdapterCache cache) {
+  public JUnit4TestAdapter(final Class<?> newTestClass, JUnit4TestAdapterCache cache) {
     fCache = cache;
     fNewTestClass = newTestClass;
+    //TestClassRunner,OldTestClassRunner,RunWith注解内的自定义Runner
     fRunner = Request.aClass(newTestClass).getRunner();
   }
 

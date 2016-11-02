@@ -1,13 +1,14 @@
 package org.junit.runners;
 
+import junit.framework.Test;
+import org.junit.internal.runners.OldTestClassRunner;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
-import junit.framework.Test;
-import org.junit.internal.runners.OldTestClassRunner;
-
-/** Runner for use with JUnit 3.8.x-style AllTests classes
+/**
+ * Runner for use with JUnit 3.8.x-style AllTests classes
  * (those that only implement a static <code>suite()</code>
  * method). For example: <br>
  * <code>
@@ -21,14 +22,14 @@ import org.junit.internal.runners.OldTestClassRunner;
  */
 public class AllTests extends OldTestClassRunner {
   private static Test suite(Class<?> klass) throws Throwable {
-    Method suiteMethod= null;
-    Test suite= null;
+    Method suiteMethod = null;
+    Test suite = null;
     try {
-      suiteMethod= klass.getMethod("suite");
-      if (! Modifier.isStatic(suiteMethod.getModifiers())) {
+      suiteMethod = klass.getMethod("suite");
+      if (!Modifier.isStatic(suiteMethod.getModifiers())) {
         throw new Exception(klass.getName() + ".suite() must be static");
       }
-      suite= (Test) suiteMethod.invoke(null); // static method
+      suite = (Test) suiteMethod.invoke(null); // static method
     } catch (InvocationTargetException e) { // TODO need coverage
       throw e.getCause();
     }

@@ -4,26 +4,27 @@ package org.junit;
  * Thrown when an {@link org.junit.Assert#assertEquals(Object, Object) assertEquals(String, String)} fails. Create and throw
  * a <code>ComparisonFailure</code> manually if you want to show users the difference between two complex
  * strings.
- *
+ * <p/>
  * Inspired by a patch from Alex Chaffee (alex@purpletech.com)
  */
 public class ComparisonFailure extends AssertionError {
-  private static final int MAX_CONTEXT_LENGTH= 20;
-  private static final long serialVersionUID= 1L;
+  private static final int MAX_CONTEXT_LENGTH = 20;
+  private static final long serialVersionUID = 1L;
 
   private String fExpected;
   private String fActual;
 
   /**
    * Constructs a comparison failure.
-   * @param message the identifying message or null
+   *
+   * @param message  the identifying message or null
    * @param expected the expected string value
-   * @param actual the actual string value
+   * @param actual   the actual string value
    */
-  public ComparisonFailure (String message, String expected, String actual) {
-    super (message);
-    fExpected= expected;
-    fActual= actual;
+  public ComparisonFailure(String message, String expected, String actual) {
+    super(message);
+    fExpected = expected;
+    fActual = actual;
   }
 
   /**
@@ -39,13 +40,16 @@ public class ComparisonFailure extends AssertionError {
 
   /**
    * Returns the actual string value
+   *
    * @return the actual string value
    */
   public String getActual() {
     return fActual;
   }
+
   /**
    * Returns the expected string value
+   *
    * @return the expected string value
    */
   public String getExpected() {
@@ -53,9 +57,9 @@ public class ComparisonFailure extends AssertionError {
   }
 
   private static class ComparisonCompactor {
-    private static final String ELLIPSIS= "...";
-    private static final String DELTA_END= "]";
-    private static final String DELTA_START= "[";
+    private static final String ELLIPSIS = "...";
+    private static final String DELTA_END = "]";
+    private static final String DELTA_START = "[";
 
     private int fContextLength;
     private String fExpected;
@@ -64,9 +68,9 @@ public class ComparisonFailure extends AssertionError {
     private int fSuffix;
 
     public ComparisonCompactor(int contextLength, String expected, String actual) {
-      fContextLength= contextLength;
-      fExpected= expected;
-      fActual= actual;
+      fContextLength = contextLength;
+      fExpected = expected;
+      fActual = actual;
     }
 
     public String compact(String message) {
@@ -75,23 +79,23 @@ public class ComparisonFailure extends AssertionError {
 
       findCommonPrefix();
       findCommonSuffix();
-      String expected= compactString(fExpected);
-      String actual= compactString(fActual);
+      String expected = compactString(fExpected);
+      String actual = compactString(fActual);
       return Assert.format(message, expected, actual);
     }
 
     private String compactString(String source) {
-      String result= DELTA_START + source.substring(fPrefix, source.length() - fSuffix + 1) + DELTA_END;
+      String result = DELTA_START + source.substring(fPrefix, source.length() - fSuffix + 1) + DELTA_END;
       if (fPrefix > 0)
-        result= computeCommonPrefix() + result;
+        result = computeCommonPrefix() + result;
       if (fSuffix > 0)
-        result= result + computeCommonSuffix();
+        result = result + computeCommonSuffix();
       return result;
     }
 
     private void findCommonPrefix() {
-      fPrefix= 0;
-      int end= Math.min(fExpected.length(), fActual.length());
+      fPrefix = 0;
+      int end = Math.min(fExpected.length(), fActual.length());
       for (; fPrefix < end; fPrefix++) {
         if (fExpected.charAt(fPrefix) != fActual.charAt(fPrefix))
           break;
@@ -99,13 +103,13 @@ public class ComparisonFailure extends AssertionError {
     }
 
     private void findCommonSuffix() {
-      int expectedSuffix= fExpected.length() - 1;
-      int actualSuffix= fActual.length() - 1;
+      int expectedSuffix = fExpected.length() - 1;
+      int actualSuffix = fActual.length() - 1;
       for (; actualSuffix >= fPrefix && expectedSuffix >= fPrefix; actualSuffix--, expectedSuffix--) {
         if (fExpected.charAt(expectedSuffix) != fActual.charAt(actualSuffix))
           break;
       }
-      fSuffix=  fExpected.length() - expectedSuffix;
+      fSuffix = fExpected.length() - expectedSuffix;
     }
 
     private String computeCommonPrefix() {
@@ -113,7 +117,7 @@ public class ComparisonFailure extends AssertionError {
     }
 
     private String computeCommonSuffix() {
-      int end= Math.min(fExpected.length() - fSuffix + 1 + fContextLength, fExpected.length());
+      int end = Math.min(fExpected.length() - fSuffix + 1 + fContextLength, fExpected.length());
       return fExpected.substring(fExpected.length() - fSuffix + 1, end) + (fExpected.length() - fSuffix + 1 < fExpected.length() - fContextLength ? ELLIPSIS : "");
     }
 

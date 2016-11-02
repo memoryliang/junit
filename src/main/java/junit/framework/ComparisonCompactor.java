@@ -2,9 +2,9 @@ package junit.framework;
 
 public class ComparisonCompactor {
 
-  private static final String ELLIPSIS= "...";
-  private static final String DELTA_END= "]";
-  private static final String DELTA_START= "[";
+  private static final String ELLIPSIS = "...";
+  private static final String DELTA_END = "]";
+  private static final String DELTA_START = "[";
 
   private int fContextLength;
   private String fExpected;
@@ -13,9 +13,9 @@ public class ComparisonCompactor {
   private int fSuffix;
 
   public ComparisonCompactor(int contextLength, String expected, String actual) {
-    fContextLength= contextLength;
-    fExpected= expected;
-    fActual= actual;
+    fContextLength = contextLength;
+    fExpected = expected;
+    fActual = actual;
   }
 
   public String compact(String message) {
@@ -24,23 +24,23 @@ public class ComparisonCompactor {
 
     findCommonPrefix();
     findCommonSuffix();
-    String expected= compactString(fExpected);
-    String actual= compactString(fActual);
+    String expected = compactString(fExpected);
+    String actual = compactString(fActual);
     return Assert.format(message, expected, actual);
   }
 
   private String compactString(String source) {
-    String result= DELTA_START + source.substring(fPrefix, source.length() - fSuffix + 1) + DELTA_END;
+    String result = DELTA_START + source.substring(fPrefix, source.length() - fSuffix + 1) + DELTA_END;
     if (fPrefix > 0)
-      result= computeCommonPrefix() + result;
+      result = computeCommonPrefix() + result;
     if (fSuffix > 0)
-      result= result + computeCommonSuffix();
+      result = result + computeCommonSuffix();
     return result;
   }
 
   private void findCommonPrefix() {
-    fPrefix= 0;
-    int end= Math.min(fExpected.length(), fActual.length());
+    fPrefix = 0;
+    int end = Math.min(fExpected.length(), fActual.length());
     for (; fPrefix < end; fPrefix++) {
       if (fExpected.charAt(fPrefix) != fActual.charAt(fPrefix))
         break;
@@ -48,13 +48,13 @@ public class ComparisonCompactor {
   }
 
   private void findCommonSuffix() {
-    int expectedSuffix= fExpected.length() - 1;
-    int actualSuffix= fActual.length() - 1;
+    int expectedSuffix = fExpected.length() - 1;
+    int actualSuffix = fActual.length() - 1;
     for (; actualSuffix >= fPrefix && expectedSuffix >= fPrefix; actualSuffix--, expectedSuffix--) {
       if (fExpected.charAt(expectedSuffix) != fActual.charAt(actualSuffix))
         break;
     }
-    fSuffix=  fExpected.length() - expectedSuffix;
+    fSuffix = fExpected.length() - expectedSuffix;
   }
 
   private String computeCommonPrefix() {
@@ -62,7 +62,7 @@ public class ComparisonCompactor {
   }
 
   private String computeCommonSuffix() {
-    int end= Math.min(fExpected.length() - fSuffix + 1 + fContextLength, fExpected.length());
+    int end = Math.min(fExpected.length() - fSuffix + 1 + fContextLength, fExpected.length());
     return fExpected.substring(fExpected.length() - fSuffix + 1, end) + (fExpected.length() - fSuffix + 1 < fExpected.length() - fContextLength ? ELLIPSIS : "");
   }
 

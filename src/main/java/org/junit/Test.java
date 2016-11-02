@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
  * annotated method. Any exceptions thrown by the test will be reported
  * by JUnit as a failure. If no exceptions are thrown, the test is assumed
  * to have succeeded.
- * <p>
+ * <p/>
  * A simple test looks like this:<br>
  * <code>
  * public class Example {<br>
@@ -21,7 +21,7 @@ import java.lang.annotation.Target;
  * &nbsp;&nbsp;}<br>
  * }
  * </code>
- * <p>
+ * <p/>
  * The <code>Test</code> annotation supports two optional parameters.
  * The first, <code>expected</code>, declares that a test method should throw
  * an exception. If it doesn't throw an exception or if it throws a different exception
@@ -31,7 +31,7 @@ import java.lang.annotation.Target;
  * &nbsp;&nbsp;&nbsp;&nbsp;new ArrayList&lt;Object&gt;().get(1);<br>
  * &nbsp;&nbsp;}<br>
  * </code>
- * <p>
+ * <p/>
  * The second optional parameter, <code>timeout</code>, causes a test to fail if it takes longer than a specified
  * amount of clock time (measured in milliseconds). The following test fails:<br>
  * <code>
@@ -44,7 +44,8 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface Test {
   static class None extends Throwable {
-    private static final long serialVersionUID= 1L;
+    private static final long serialVersionUID = 1L;
+
     private None() {
     }
   }
@@ -57,6 +58,7 @@ public @interface Test {
 
   /**
    * Optionally specify <code>timeout</code> in milliseconds to cause a test method to fail if it
-   * takes longer than that number of milliseconds.*/
+   * takes longer than that number of milliseconds.
+   */
   long timeout() default 0L;
 }

@@ -1,18 +1,11 @@
 package org.junit.internal.runners;
 
 import junit.extensions.TestDecorator;
-import junit.framework.AssertionFailedError;
-import junit.framework.JUnit4TestAdapter;
-import junit.framework.JUnit4TestCaseFacade;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestListener;
-import junit.framework.TestResult;
-import junit.framework.TestSuite;
+import junit.framework.*;
 import org.junit.runner.Description;
 import org.junit.runner.Runner;
-import org.junit.runner.notification.RunNotifier;
 import org.junit.runner.notification.Failure;
+import org.junit.runner.notification.RunNotifier;
 
 public class OldTestClassRunner extends Runner {
 
@@ -25,12 +18,12 @@ public class OldTestClassRunner extends Runner {
 
   public OldTestClassRunner(Test test) {
     super();
-    fTest= test;
+    fTest = test;
   }
 
   @Override
   public void run(RunNotifier notifier) {
-    TestResult result= new TestResult();
+    TestResult result = new TestResult();
     result.addListener(getListener(notifier));
     fTest.run(result);
   }
@@ -49,13 +42,13 @@ public class OldTestClassRunner extends Runner {
       // Implement junit.framework.TestListener
       //TODO method not covered
       public void addError(Test test, Throwable t) {
-        Failure failure= new Failure(asDescription(test), t);
+        Failure failure = new Failure(asDescription(test), t);
         notifier.fireTestFailure(failure);
       }
 
       private Description asDescription(Test test) {
         if (test instanceof JUnit4TestCaseFacade) {
-          JUnit4TestCaseFacade facade= (JUnit4TestCaseFacade) test;
+          JUnit4TestCaseFacade facade = (JUnit4TestCaseFacade) test;
           return facade.getDescription();
         }
         return Description.createTestDescription(test.getClass(), getName(test));
@@ -82,20 +75,20 @@ public class OldTestClassRunner extends Runner {
 
   private Description makeDescription(Test test) {
     if (test instanceof TestCase) {
-      TestCase tc= (TestCase) test;
+      TestCase tc = (TestCase) test;
       return Description.createTestDescription(tc.getClass(), tc.getName());
     } else if (test instanceof TestSuite) {
-      TestSuite ts= (TestSuite) test;
-      Description description= Description.createSuiteDescription(ts.getName());
-      int n= ts.testCount();
-      for (int i= 0; i < n; i++)
+      TestSuite ts = (TestSuite) test;
+      Description description = Description.createSuiteDescription(ts.getName());
+      int n = ts.testCount();
+      for (int i = 0; i < n; i++)
         description.addChild(makeDescription(ts.testAt(i)));
       return description;
     } else if (test instanceof JUnit4TestAdapter) {
-      JUnit4TestAdapter adapter= (JUnit4TestAdapter) test;
+      JUnit4TestAdapter adapter = (JUnit4TestAdapter) test;
       return adapter.getDescription();
     } else if (test instanceof TestDecorator) {
-      TestDecorator decorator= (TestDecorator) test;
+      TestDecorator decorator = (TestDecorator) test;
       return makeDescription(decorator.getTest());
     } else {
       // This is the best we can do in this case

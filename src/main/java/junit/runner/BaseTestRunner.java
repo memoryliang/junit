@@ -1,37 +1,25 @@
 package junit.runner;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
-import java.io.StringReader;
-import java.io.StringWriter;
+import junit.framework.*;
+
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.text.NumberFormat;
 import java.util.Properties;
 
-import junit.framework.AssertionFailedError;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestListener;
-import junit.framework.TestSuite;
-
 /**
  * Base class for all test runners.
  * This class was born live on stage in Sardinia during XP2000.
  */
 public abstract class BaseTestRunner implements TestListener {
-  public static final String SUITE_METHODNAME= "suite";
+  public static final String SUITE_METHODNAME = "suite";
 
   private static Properties fPreferences;
-  static int fgMaxMessageLength= 500;
-  static boolean fgFilterStack= true;
-  boolean fLoading= true;
+  static int fgMaxMessageLength = 500;
+  static boolean fgFilterStack = true;
+  boolean fLoading = true;
 
   /*
   * Implementation of TestListener
@@ -41,12 +29,12 @@ public abstract class BaseTestRunner implements TestListener {
   }
 
   protected static void setPreferences(Properties preferences) {
-    fPreferences= preferences;
+    fPreferences = preferences;
   }
 
   protected static Properties getPreferences() {
     if (fPreferences == null) {
-      fPreferences= new Properties();
+      fPreferences = new Properties();
       fPreferences.put("loading", "true");
       fPreferences.put("filterstack", "true");
       readPreferences();
@@ -55,7 +43,7 @@ public abstract class BaseTestRunner implements TestListener {
   }
 
   public static void savePreferences() throws IOException {
-    FileOutputStream fos= new FileOutputStream(getPreferencesFile());
+    FileOutputStream fos = new FileOutputStream(getPreferencesFile());
     try {
       getPreferences().store(fos, "");
     } finally {
@@ -96,42 +84,40 @@ public abstract class BaseTestRunner implements TestListener {
       clearStatus();
       return null;
     }
-    Class<? extends TestCase> testClass= null;
+    Class<? extends TestCase> testClass = null;
     try {
-      testClass= loadSuiteClass(suiteClassName);
+      testClass = loadSuiteClass(suiteClassName);
     } catch (ClassNotFoundException e) {
-      String clazz= e.getMessage();
+      String clazz = e.getMessage();
       if (clazz == null)
-        clazz= suiteClassName;
-      runFailed("Class not found \""+clazz+"\"");
+        clazz = suiteClassName;
+      runFailed("Class not found \"" + clazz + "\"");
       return null;
-    } catch(Exception e) {
-      runFailed("Error: "+e.toString());
+    } catch (Exception e) {
+      runFailed("Error: " + e.toString());
       return null;
     }
-    Method suiteMethod= null;
+    Method suiteMethod = null;
     try {
-      suiteMethod= testClass.getMethod(SUITE_METHODNAME, new Class[0]);
-    } catch(Exception e) {
+      suiteMethod = testClass.getMethod(SUITE_METHODNAME, new Class[0]);
+    } catch (Exception e) {
       // try to extract a test suite automatically
       clearStatus();
       return new TestSuite(testClass);
     }
-    if (! Modifier.isStatic(suiteMethod.getModifiers())) {
+    if (!Modifier.isStatic(suiteMethod.getModifiers())) {
       runFailed("Suite() method must be static");
       return null;
     }
-    Test test= null;
+    Test test = null;
     try {
-      test= (Test)suiteMethod.invoke(null, (Object[])new Class[0]); // static method
+      test = (Test) suiteMethod.invoke(null, (Object[]) new Class[0]); // static method
       if (test == null)
         return test;
-    }
-    catch (InvocationTargetException e) {
+    } catch (InvocationTargetException e) {
       runFailed("Failed to invoke suite():" + e.getTargetException().toString());
       return null;
-    }
-    catch (IllegalAccessException e) {
+    } catch (IllegalAccessException e) {
       runFailed("Failed to invoke suite():" + e.toString());
       return null;
     }
@@ -144,7 +130,7 @@ public abstract class BaseTestRunner implements TestListener {
    * Returns the formatted string of the elapsed time.
    */
   public String elapsedTimeAsString(long runTime) {
-    return NumberFormat.getInstance().format((double)runTime/1000);
+    return NumberFormat.getInstance().format((double) runTime / 1000);
   }
 
   /**
@@ -152,20 +138,20 @@ public abstract class BaseTestRunner implements TestListener {
    * returns the name of the suite class to run or null
    */
   protected String processArguments(String[] args) {
-    String suiteName= null;
-    for (int i= 0; i < args.length; i++) {
+    String suiteName = null;
+    for (int i = 0; i < args.length; i++) {
       if (args[i].equals("-noloading")) {
         setLoading(false);
       } else if (args[i].equals("-nofilterstack")) {
-        fgFilterStack= false;
+        fgFilterStack = false;
       } else if (args[i].equals("-c")) {
-        if (args.length > i+1)
-          suiteName= extractClassName(args[i+1]);
+        if (args.length > i + 1)
+          suiteName = extractClassName(args[i + 1]);
         else
           System.out.println("Missing Test class name");
         i++;
       } else {
-        suiteName= args[i];
+        suiteName = args[i];
       }
     }
     return suiteName;
@@ -175,14 +161,15 @@ public abstract class BaseTestRunner implements TestListener {
    * Sets the loading behaviour of the test runner
    */
   public void setLoading(boolean enable) {
-    fLoading= enable;
+    fLoading = enable;
   }
+
   /**
    * Extract the class name from a String in VA/Java style
    */
   public String extractClassName(String className) {
-    if(className.startsWith("Default package for"))
-      return className.substring(className.lastIndexOf(".")+1);
+    if (className.startsWith("Default package for"))
+      return className.substring(className.lastIndexOf(".") + 1);
     return className;
   }
 
@@ -191,7 +178,7 @@ public abstract class BaseTestRunner implements TestListener {
    */
   public static String truncate(String s) {
     if (fgMaxMessageLength != -1 && s.length() > fgMaxMessageLength)
-      s= s.substring(0, fgMaxMessageLength)+"...";
+      s = s.substring(0, fgMaxMessageLength) + "...";
     return s;
   }
 
@@ -221,14 +208,14 @@ public abstract class BaseTestRunner implements TestListener {
   }
 
   private static File getPreferencesFile() {
-    String home= System.getProperty("user.home");
+    String home = System.getProperty("user.home");
     return new File(home, "junit.properties");
   }
 
   private static void readPreferences() {
-    InputStream is= null;
+    InputStream is = null;
     try {
-      is= new FileInputStream(getPreferencesFile());
+      is = new FileInputStream(getPreferencesFile());
       setPreferences(new Properties(getPreferences()));
       getPreferences().load(is);
     } catch (IOException e) {
@@ -245,12 +232,12 @@ public abstract class BaseTestRunner implements TestListener {
   }
 
   public static int getPreference(String key, int dflt) {
-    String value= getPreference(key);
-    int intValue= dflt;
+    String value = getPreference(key);
+    int intValue = dflt;
     if (value == null)
       return intValue;
     try {
-      intValue= Integer.parseInt(value);
+      intValue = Integer.parseInt(value);
     } catch (NumberFormatException ne) {
     }
     return intValue;
@@ -260,11 +247,11 @@ public abstract class BaseTestRunner implements TestListener {
    * Returns a filtered stack trace
    */
   public static String getFilteredTrace(Throwable t) {
-    StringWriter stringWriter= new StringWriter();
-    PrintWriter writer= new PrintWriter(stringWriter);
+    StringWriter stringWriter = new StringWriter();
+    PrintWriter writer = new PrintWriter(stringWriter);
     t.printStackTrace(writer);
-    StringBuffer buffer= stringWriter.getBuffer();
-    String trace= buffer.toString();
+    StringBuffer buffer = stringWriter.getBuffer();
+    String trace = buffer.toString();
     return BaseTestRunner.getFilteredTrace(trace);
   }
 
@@ -275,14 +262,14 @@ public abstract class BaseTestRunner implements TestListener {
     if (showStackRaw())
       return stack;
 
-    StringWriter sw= new StringWriter();
-    PrintWriter pw= new PrintWriter(sw);
-    StringReader sr= new StringReader(stack);
-    BufferedReader br= new BufferedReader(sr);
+    StringWriter sw = new StringWriter();
+    PrintWriter pw = new PrintWriter(sw);
+    StringReader sr = new StringReader(stack);
+    BufferedReader br = new BufferedReader(sr);
 
     String line;
     try {
-      while ((line= br.readLine()) != null) {
+      while ((line = br.readLine()) != null) {
         if (!filterLine(line))
           pw.println(line);
       }
@@ -297,7 +284,7 @@ public abstract class BaseTestRunner implements TestListener {
   }
 
   static boolean filterLine(String line) {
-    String[] patterns= new String[] {
+    String[] patterns = new String[]{
         "junit.framework.TestCase",
         "junit.framework.TestResult",
         "junit.framework.TestSuite",
@@ -307,7 +294,7 @@ public abstract class BaseTestRunner implements TestListener {
         "junit.textui.TestRunner",
         "java.lang.reflect.Method.invoke("
     };
-    for (int i= 0; i < patterns.length; i++) {
+    for (int i = 0; i < patterns.length; i++) {
       if (line.indexOf(patterns[i]) > 0)
         return true;
     }
@@ -315,7 +302,7 @@ public abstract class BaseTestRunner implements TestListener {
   }
 
   static {
-    fgMaxMessageLength= getPreference("maxmessage", fgMaxMessageLength);
+    fgMaxMessageLength = getPreference("maxmessage", fgMaxMessageLength);
   }
 
 }

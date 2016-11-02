@@ -17,7 +17,7 @@ public class TestSetup extends TestDecorator {
 
   @Override
   public void run(final TestResult result) {
-    Protectable p= new Protectable() {
+    Protectable p = new Protectable() {
       public void protect() throws Exception {
         setUp();
         basicRun(result);

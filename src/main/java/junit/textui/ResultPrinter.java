@@ -1,26 +1,22 @@
-
 package junit.textui;
+
+import junit.framework.*;
+import junit.runner.BaseTestRunner;
 
 import java.io.PrintStream;
 import java.text.NumberFormat;
 import java.util.Enumeration;
-import junit.framework.AssertionFailedError;
-import junit.framework.Test;
-import junit.framework.TestFailure;
-import junit.framework.TestListener;
-import junit.framework.TestResult;
-import junit.runner.BaseTestRunner;
 
 public class ResultPrinter implements TestListener {
   PrintStream fWriter;
-  int fColumn= 0;
+  int fColumn = 0;
 
   public ResultPrinter(PrintStream writer) {
-    fWriter= writer;
+    fWriter = writer;
   }
 
 	/* API for use by textui.TestRunner
-	 */
+   */
 
   synchronized void print(TestResult result, long runTime) {
     printHeader(runTime);
@@ -39,7 +35,7 @@ public class ResultPrinter implements TestListener {
 
   protected void printHeader(long runTime) {
     getWriter().println();
-    getWriter().println("Time: "+elapsedTimeAsString(runTime));
+    getWriter().println("Time: " + elapsedTimeAsString(runTime));
   }
 
   protected void printErrors(TestResult result) {
@@ -56,7 +52,7 @@ public class ResultPrinter implements TestListener {
       getWriter().println("There was " + count + " " + type + ":");
     else
       getWriter().println("There were " + count + " " + type + "s:");
-    for (int i= 1; booBoos.hasMoreElements(); i++) {
+    for (int i = 1; booBoos.hasMoreElements(); i++) {
       printDefect(booBoos.nextElement(), i);
     }
   }
@@ -80,14 +76,14 @@ public class ResultPrinter implements TestListener {
     if (result.wasSuccessful()) {
       getWriter().println();
       getWriter().print("OK");
-      getWriter().println (" (" + result.runCount() + " test" + (result.runCount() == 1 ? "": "s") + ")");
+      getWriter().println(" (" + result.runCount() + " test" + (result.runCount() == 1 ? "" : "s") + ")");
 
     } else {
       getWriter().println();
       getWriter().println("FAILURES!!!");
-      getWriter().println("Tests run: "+result.runCount()+
-          ",  Failures: "+result.failureCount()+
-          ",  Errors: "+result.errorCount());
+      getWriter().println("Tests run: " + result.runCount() +
+          ",  Failures: " + result.failureCount() +
+          ",  Errors: " + result.errorCount());
     }
     getWriter().println();
   }
@@ -98,12 +94,13 @@ public class ResultPrinter implements TestListener {
    * Duplicated from BaseTestRunner. Fix it.
    */
   protected String elapsedTimeAsString(long runTime) {
-    return NumberFormat.getInstance().format((double)runTime/1000);
+    return NumberFormat.getInstance().format((double) runTime / 1000);
   }
 
   public PrintStream getWriter() {
     return fWriter;
   }
+
   /**
    * @see junit.framework.TestListener#addError(Test, Throwable)
    */
@@ -131,7 +128,7 @@ public class ResultPrinter implements TestListener {
     getWriter().print(".");
     if (fColumn++ >= 40) {
       getWriter().println();
-      fColumn= 0;
+      fColumn = 0;
     }
   }
 

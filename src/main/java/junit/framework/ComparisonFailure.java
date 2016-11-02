@@ -2,26 +2,27 @@ package junit.framework;
 
 /**
  * Thrown when an assert equals for Strings failed.
- *
+ * <p/>
  * Inspired by a patch from Alex Chaffee mailto:alex@purpletech.com
  */
 public class ComparisonFailure extends AssertionFailedError {
-  private static final int MAX_CONTEXT_LENGTH= 20;
-  private static final long serialVersionUID= 1L;
+  private static final int MAX_CONTEXT_LENGTH = 20;
+  private static final long serialVersionUID = 1L;
 
   private String fExpected;
   private String fActual;
 
   /**
    * Constructs a comparison failure.
-   * @param message the identifying message or null
+   *
+   * @param message  the identifying message or null
    * @param expected the expected string value
-   * @param actual the actual string value
+   * @param actual   the actual string value
    */
-  public ComparisonFailure (String message, String expected, String actual) {
-    super (message);
-    fExpected= expected;
-    fActual= actual;
+  public ComparisonFailure(String message, String expected, String actual) {
+    super(message);
+    fExpected = expected;
+    fActual = actual;
   }
 
   /**
@@ -37,13 +38,16 @@ public class ComparisonFailure extends AssertionFailedError {
 
   /**
    * Gets the actual string value
+   *
    * @return the actual string value
    */
   public String getActual() {
     return fActual;
   }
+
   /**
    * Gets the expected string value
+   *
    * @return the expected string value
    */
   public String getExpected() {

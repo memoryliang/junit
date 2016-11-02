@@ -4,13 +4,9 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.Description;
 import org.junit.runner.Runner;
-import org.junit.runner.manipulation.Filter;
-import org.junit.runner.manipulation.Filterable;
-import org.junit.runner.manipulation.NoTestsRemainException;
-import org.junit.runner.manipulation.Sortable;
-import org.junit.runner.manipulation.Sorter;
-import org.junit.runner.notification.RunNotifier;
+import org.junit.runner.manipulation.*;
 import org.junit.runner.notification.Failure;
+import org.junit.runner.notification.RunNotifier;
 
 public class TestClassRunner extends Runner implements Filterable, Sortable {
   protected final Runner fEnclosedRunner;
@@ -21,22 +17,21 @@ public class TestClassRunner extends Runner implements Filterable, Sortable {
   }
 
   public TestClassRunner(Class<?> klass, Runner runner) throws InitializationError {
-    fTestClass= klass;
-    fEnclosedRunner= runner;
-    MethodValidator methodValidator= new MethodValidator(klass);
+    fTestClass = klass;
+    fEnclosedRunner = runner;
+    MethodValidator methodValidator = new MethodValidator(klass);
     validate(methodValidator);
     methodValidator.assertValid();
   }
 
-  // TODO: this is parallel to passed-in runner
+  // TODO: this is parallel to passed-in runner ?
   protected void validate(MethodValidator methodValidator) {
     methodValidator.validateAllMethods();
   }
 
   @Override
   public void run(final RunNotifier notifier) {
-    BeforeAndAfterRunner runner = new BeforeAndAfterRunner(getTestClass(),
-        BeforeClass.class, AfterClass.class, null) {
+    BeforeAndAfterRunner runner = new BeforeAndAfterRunner(getTestClass(), BeforeClass.class, AfterClass.class, null) {
       @Override
       protected void runUnprotected() {
         fEnclosedRunner.run(notifier);

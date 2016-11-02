@@ -1,12 +1,11 @@
 package org.junit.runners;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.internal.runners.CompositeRunner;
+import org.junit.internal.runners.MethodValidator;
+import org.junit.internal.runners.TestClassMethodsRunner;
+import org.junit.internal.runners.TestClassRunner;
 
-import java.lang.annotation.Annotation;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -15,15 +14,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.junit.internal.runners.CompositeRunner;
-import org.junit.internal.runners.MethodValidator;
-import org.junit.internal.runners.TestClassMethodsRunner;
-import org.junit.internal.runners.TestClassRunner;
+import static org.junit.Assert.assertEquals;
 
-/** The custom runner <code>Parameterized</code> implements parameterized
+/**
+ * The custom runner <code>Parameterized</code> implements parameterized
  * tests. When running a parameterized test class, instances are created for the
  * cross-product of the test methods and the test data elements.<br>
- * <p>
+ * <p/>
  * For example, to test a Fibonacci function, write:
  * <code>
  * &nbsp;<br>@RunWith(Parameterized.class)<br>
@@ -33,21 +30,21 @@ import org.junit.internal.runners.TestClassRunner;
  * &nbsp;&nbsp;&nbsp;&nbsp;return Arrays.asList(new Object[][] { { 0, 0 }, { 1, 1 }, { 2, 1 },<br>
  * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ 3, 2 }, { 4, 3 }, { 5, 5 }, { 6, 8 } });<br>
  * &nbsp;&nbsp;}<br>
- *<br>
+ * <br>
  * &nbsp;&nbsp;private int fInput;<br>
  * &nbsp;&nbsp;private int fExpected;<br>
- *<br>
+ * <br>
  * &nbsp;&nbsp;public FibonacciTest(int input, int expected) {<br>
  * &nbsp;&nbsp;&nbsp;&nbsp;fInput= input;<br>
  * &nbsp;&nbsp;&nbsp;&nbsp;fExpected= expected;<br>
  * &nbsp;&nbsp;}<br>
- *<br>
+ * <br>
  * &nbsp;&nbsp;@Test public void test() {<br>
  * &nbsp;&nbsp;&nbsp;&nbsp;assertEquals(fExpected, Fibonacci.compute(fInput));<br>
  * &nbsp;&nbsp;}<br>
  * }<br>
  * </code>
- * <p>
+ * <p/>
  * Each instance of <code>FibonacciTest</code> will be constructed using the two-argument
  * constructor and the data values in the <code>@Parameters</code> method.
  */
@@ -58,9 +55,9 @@ public class Parameterized extends TestClassRunner {
   }
 
   public static Collection<Object[]> eachOne(Object... params) {
-    List<Object[]> results= new ArrayList<Object[]>();
+    List<Object[]> results = new ArrayList<Object[]>();
     for (Object param : params)
-      results.add(new Object[] { param });
+      results.add(new Object[]{param});
     return results;
   }
 
@@ -75,9 +72,9 @@ public class Parameterized extends TestClassRunner {
 
     private TestClassRunnerForParameters(Class<?> klass, Object[] parameters, int i) {
       super(klass);
-      fParameters= parameters;
-      fParameterSetNumber= i;
-      fConstructor= getOnlyConstructor();
+      fParameters = parameters;
+      fParameterSetNumber = i;
+      fConstructor = getOnlyConstructor();
     }
 
     @Override
@@ -96,7 +93,7 @@ public class Parameterized extends TestClassRunner {
     }
 
     private Constructor getOnlyConstructor() {
-      Constructor[] constructors= getTestClass().getConstructors();
+      Constructor[] constructors = getTestClass().getConstructors();
       assertEquals(1, constructors.length);
       return constructors[0];
     }
@@ -109,8 +106,8 @@ public class Parameterized extends TestClassRunner {
 
     public RunAllParameterMethods(Class<?> klass) throws Exception {
       super(klass.getName());
-      fKlass= klass;
-      int i= 0;
+      fKlass = klass;
+      int i = 0;
       for (final Object[] parameters : getParametersList()) {
         super.add(new TestClassRunnerForParameters(klass, parameters, i++));
       }
@@ -124,7 +121,7 @@ public class Parameterized extends TestClassRunner {
     private Method getParametersMethod() throws Exception {
       for (Method each : fKlass.getMethods()) {
         if (Modifier.isStatic(each.getModifiers())) {
-          Annotation[] annotations= each.getAnnotations();
+          Annotation[] annotations = each.getAnnotations();
           for (Annotation annotation : annotations) {
             if (annotation.annotationType() == Parameters.class)
               return each;

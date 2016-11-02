@@ -1,12 +1,12 @@
 package org.junit.internal.runners;
 
-import java.io.PrintStream;
-import java.text.NumberFormat;
-
 import org.junit.runner.Description;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunListener;
+
+import java.io.PrintStream;
+import java.text.NumberFormat;
 
 public class TextListener extends RunListener {
 
@@ -17,7 +17,7 @@ public class TextListener extends RunListener {
   }
 
   public TextListener(PrintStream writer) {
-    this.fWriter= writer;
+    this.fWriter = writer;
   }
 
   @Override
@@ -43,7 +43,7 @@ public class TextListener extends RunListener {
   }
 
 	/*
-	 * Internal methods
+   * Internal methods
 	 */
 
   private PrintStream getWriter() {
@@ -62,7 +62,7 @@ public class TextListener extends RunListener {
       getWriter().println("There was " + result.getFailureCount() + " failure:");
     else
       getWriter().println("There were " + result.getFailureCount() + " failures:");
-    int i= 1;
+    int i = 1;
     for (Failure each : result.getFailures())
       printFailure(each, i++);
   }

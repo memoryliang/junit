@@ -12,31 +12,31 @@ import org.junit.runner.notification.RunNotifier;
 import static org.junit.Assert.assertEquals;
 
 public class ValidationTest {
-	public static class WrongBeforeClass {
-		@BeforeClass
-		protected int a() {
-			return 0;
-		}
-	}
+  public static class WrongBeforeClass {
+    @BeforeClass
+    protected int a() {
+      return 0;
+    }
+  }
 
-	@Test(expected=InitializationError.class)
-	public void testClassRunnerHandlesBeforeClassAndAfterClassValidation() throws InitializationError {
-		new TestClassRunner(WrongBeforeClass.class, new Runner() {
-			@Override
-			public Description getDescription() {
-				return null;
-			}
+  @Test(expected = InitializationError.class)
+  public void testClassRunnerHandlesBeforeClassAndAfterClassValidation() throws InitializationError {
+    new TestClassRunner(WrongBeforeClass.class, new Runner() {
+      @Override
+      public Description getDescription() {
+        return null;
+      }
 
-			@Override
-			public void run(RunNotifier notifier) {
-				// do nothing
-			}
-		});
-	}
-	
-	@Test
-	public void initializationErrorIsOnCorrectClass() {
-		assertEquals(WrongBeforeClass.class.getName(), 
-				Request.aClass(WrongBeforeClass.class).getRunner().getDescription().getDisplayName());
-	}
+      @Override
+      public void run(RunNotifier notifier) {
+        // do nothing
+      }
+    });
+  }
+
+  @Test
+  public void initializationErrorIsOnCorrectClass() {
+    assertEquals(WrongBeforeClass.class.getName(),
+        Request.aClass(WrongBeforeClass.class).getRunner().getDescription().getDisplayName());
+  }
 }

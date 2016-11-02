@@ -141,10 +141,10 @@ import java.util.regex.Pattern;
  * can be atomic (a single test) or compound (containing children tests). <code>Descriptions</code> are used
  * to provide feedback about the tests that are about to run (for example, the tree view
  * visible in many IDEs) or tests that have been run (for example, the failures view).</p>
- *
+ * <p/>
  * <p><code>Descriptions</code> are implemented as a single class rather than a Composite because
  * they are entirely informational. They contain no logic aside from counting their tests.</p>
- *
+ * <p/>
  * <p>In the past, we used the raw {@link junit.framework.TestCase}s and {@link junit.framework.TestSuite}s
  * to display the tree of tests. This was no longer viable in JUnit 4 because atomic tests no longer have
  * a superclass below {@link Object}. We needed a way to pass a class and name together. Description
@@ -156,9 +156,29 @@ import java.util.regex.Pattern;
 public class Description {
 
   /**
+   * Describes a Runner which runs no tests
+   */
+  public static final Description EMPTY = new Description("No Tests");
+  /**
+   * Describes a step in the test-running mechanism that goes so wrong no
+   * other description can be used (for example, an exception thrown from a Runner's
+   * constructor
+   */
+  public static final Description TEST_MECHANISM = new Description("Test mechanism");
+  private final ArrayList<Description> fChildren = new ArrayList<Description>();
+  private final String fDisplayName;
+  private final Annotation[] fAnnotations;
+
+  private Description(final String displayName, Annotation... annotations) {
+    fDisplayName = displayName;
+    fAnnotations = annotations;
+  }
+
+  /**
    * Create a <code>Description</code> named <code>name</code>.
    * Generally, you will add children to this <code>Description</code>.
-   * @param name the name of the <code>Description</code>
+   *
+   * @param name        the name of the <code>Description</code>
    * @param annotations
    * @return a <code>Description</code> named <code>name</code>
    */
@@ -171,8 +191,9 @@ public class Description {
   /**
    * Create a <code>Description</code> of a single test named <code>name</code> in the class <code>clazz</code>.
    * Generally, this will be a leaf <code>Description</code>.
-   * @param clazz the class of the test
-   * @param name the name of the test (a method name for test annotated with {@link org.junit.Test})
+   *
+   * @param clazz       the class of the test
+   * @param name        the name of the test (a method name for test annotated with {@link org.junit.Test})
    * @param annotations meta-data about the test, for downstream interpreters
    * @return a <code>Description</code> named <code>name</code>
    */
@@ -184,8 +205,9 @@ public class Description {
    * Create a <code>Description</code> of a single test named <code>name</code> in the class <code>clazz</code>.
    * Generally, this will be a leaf <code>Description</code>.
    * (This remains for binary compatibility with clients of JUnit 4.3)
+   *
    * @param clazz the class of the test
-   * @param name the name of the test (a method name for test annotated with {@link org.junit.Test})
+   * @param name  the name of the test (a method name for test annotated with {@link org.junit.Test})
    * @return a <code>Description</code> named <code>name</code>
    */
   public static Description createTestDescription(Class<?> clazz, String name) {
@@ -194,33 +216,12 @@ public class Description {
 
   /**
    * Create a <code>Description</code> named after <code>testClass</code>
+   *
    * @param testClass A {@link Class} containing tests
    * @return a <code>Description</code> of <code>testClass</code>
    */
   public static Description createSuiteDescription(Class<?> testClass) {
     return new Description(testClass.getName(), testClass.getAnnotations());
-  }
-
-  /**
-   * Describes a Runner which runs no tests
-   */
-  public static final Description EMPTY= new Description("No Tests");
-
-  /**
-   * Describes a step in the test-running mechanism that goes so wrong no
-   * other description can be used (for example, an exception thrown from a Runner's
-   * constructor
-   */
-  public static final Description TEST_MECHANISM= new Description("Test mechanism");
-
-  private final ArrayList<Description> fChildren= new ArrayList<Description>();
-  private final String fDisplayName;
-
-  private final Annotation[] fAnnotations;
-
-  private Description(final String displayName, Annotation... annotations) {
-    fDisplayName= displayName;
-    fAnnotations= annotations;
   }
 
   /**
@@ -232,6 +233,7 @@ public class Description {
 
   /**
    * Add <code>Description</code> as a child of the receiver.
+   *
    * @param description the soon-to-be child.
    */
   public void addChild(Description description) {
@@ -265,9 +267,9 @@ public class Description {
   public int testCount() {
     if (isTest())
       return 1;
-    int result= 0;
+    int result = 0;
     for (Description child : getChildren())
-      result+= child.testCount();
+      result += child.testCount();
     return result;
   }
 
@@ -325,7 +327,7 @@ public class Description {
 
   // TODO javadoc
   public Class<?> getTestClass() {
-    String name= getClassName();
+    String name = getClassName();
     if (name == null)
       return null;
     try {
@@ -337,14 +339,14 @@ public class Description {
 
   //TODO javadoc
   public String getClassName() {
-    Matcher matcher= Pattern.compile("(.*)\\((.*)\\)").matcher(toString());
+    Matcher matcher = Pattern.compile("(.*)\\((.*)\\)").matcher(toString());
     return matcher.matches()
         ? matcher.group(2)
         : toString();
   }
 
   private String parseMethod() {
-    Matcher matcher= Pattern.compile("(.*)\\((.*)\\)").matcher(toString());
+    Matcher matcher = Pattern.compile("(.*)\\((.*)\\)").matcher(toString());
     if (matcher.matches())
       return matcher.group(1);
     return null;

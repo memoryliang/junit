@@ -21,6 +21,7 @@ public abstract class Runner {
 
   /**
    * Run the tests for this runner.
+   *
    * @param notifier will be notified of events while tests are being run--tests being started, finishing, and failing
    */
   public abstract void run(RunNotifier notifier);

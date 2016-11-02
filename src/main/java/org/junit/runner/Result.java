@@ -1,10 +1,10 @@
 package org.junit.runner;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A <code>Result</code> collects and summarizes information from running multiple
@@ -12,10 +12,10 @@ import org.junit.runner.notification.RunListener;
  * the count of tests that ran.
  */
 public class Result {
-  private int fCount= 0;
-  private int fIgnoreCount= 0;
-  private List<Failure> fFailures= new ArrayList<Failure>();
-  private long fRunTime= 0;
+  private int fCount = 0;
+  private int fIgnoreCount = 0;
+  private List<Failure> fFailures = new ArrayList<Failure>();
+  private long fRunTime = 0;
   private long fStartTime;
 
   /**
@@ -63,13 +63,13 @@ public class Result {
   private class Listener extends RunListener {
     @Override
     public void testRunStarted(Description description) throws Exception {
-      fStartTime= System.currentTimeMillis();
+      fStartTime = System.currentTimeMillis();
     }
 
     @Override
     public void testRunFinished(Result result) throws Exception {
-      long endTime= System.currentTimeMillis();
-      fRunTime+= endTime - fStartTime;
+      long endTime = System.currentTimeMillis();
+      fRunTime += endTime - fStartTime;
     }
 
     @Override

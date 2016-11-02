@@ -6,28 +6,24 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 public abstract class BeforeAndAfterRunner {
-  private static class FailedBefore extends Exception {
-    private static final long serialVersionUID= 1L;
-  }
-
   private final Class<? extends Annotation> fBeforeAnnotation;
-
   private final Class<? extends Annotation> fAfterAnnotation;
-
   private TestIntrospector fTestIntrospector;
-
   private Object fTest;
 
   public BeforeAndAfterRunner(Class<?> testClass,
                               Class<? extends Annotation> beforeAnnotation,
                               Class<? extends Annotation> afterAnnotation,
                               Object test) {
-    fBeforeAnnotation= beforeAnnotation;
-    fAfterAnnotation= afterAnnotation;
-    fTestIntrospector= new TestIntrospector(testClass);
-    fTest= test;
+    fBeforeAnnotation = beforeAnnotation;
+    fAfterAnnotation = afterAnnotation;
+    fTestIntrospector = new TestIntrospector(testClass);
+    fTest = test;
   }
 
+  /**
+   * 模板模式
+   */
   public void runProtected() {
     try {
       runBefores();
@@ -45,7 +41,8 @@ public abstract class BeforeAndAfterRunner {
   // Stop after first failed @Before
   private void runBefores() throws FailedBefore {
     try {
-      List<Method> befores= fTestIntrospector.getTestMethods(fBeforeAnnotation);
+      System.out.println("=============runBefores");
+      List<Method> befores = fTestIntrospector.getTestMethods(fBeforeAnnotation);
       for (Method before : befores)
         invokeMethod(before);
     } catch (InvocationTargetException e) {
@@ -59,7 +56,7 @@ public abstract class BeforeAndAfterRunner {
 
   // Try to run all @Afters regardless
   private void runAfters() {
-    List<Method> afters= fTestIntrospector.getTestMethods(fAfterAnnotation);
+    List<Method> afters = fTestIntrospector.getTestMethods(fAfterAnnotation);
     for (Method after : afters)
       try {
         invokeMethod(after);
@@ -72,5 +69,9 @@ public abstract class BeforeAndAfterRunner {
 
   private void invokeMethod(Method method) throws Exception {
     method.invoke(fTest);
+  }
+
+  private static class FailedBefore extends Exception {
+    private static final long serialVersionUID = 1L;
   }
 }

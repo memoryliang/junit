@@ -1,26 +1,18 @@
 package org.junit.internal.runners;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-
 import org.junit.runner.Description;
 import org.junit.runner.Runner;
-import org.junit.runner.manipulation.Filter;
-import org.junit.runner.manipulation.Filterable;
-import org.junit.runner.manipulation.NoTestsRemainException;
-import org.junit.runner.manipulation.Sortable;
-import org.junit.runner.manipulation.Sorter;
+import org.junit.runner.manipulation.*;
 import org.junit.runner.notification.RunNotifier;
 
+import java.util.*;
+
 public class CompositeRunner extends Runner implements Filterable, Sortable {
-  private final List<Runner> fRunners= new ArrayList<Runner>();
+  private final List<Runner> fRunners = new ArrayList<Runner>();
   private final String fName;
 
   public CompositeRunner(String name) {
-    fName= name;
+    fName = name;
   }
 
   @Override
@@ -31,7 +23,7 @@ public class CompositeRunner extends Runner implements Filterable, Sortable {
 
   @Override
   public Description getDescription() {
-    Description spec= Description.createSuiteDescription(fName);
+    Description spec = Description.createSuiteDescription(fName);
     for (Runner runner : fRunners) {
       spec.addChild(runner.getDescription());
     }
@@ -51,8 +43,8 @@ public class CompositeRunner extends Runner implements Filterable, Sortable {
   }
 
   public void filter(Filter filter) throws NoTestsRemainException {
-    for (Iterator iter= fRunners.iterator(); iter.hasNext();) {
-      Runner runner= (Runner) iter.next();
+    for (Iterator iter = fRunners.iterator(); iter.hasNext(); ) {
+      Runner runner = (Runner) iter.next();
       if (filter.shouldRun(runner.getDescription())) {
         filter.apply(runner);
       } else {

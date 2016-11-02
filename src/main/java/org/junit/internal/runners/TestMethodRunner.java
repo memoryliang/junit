@@ -1,19 +1,14 @@
 package org.junit.internal.runners;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.runner.Description;
-import org.junit.runner.notification.RunNotifier;
 import org.junit.runner.notification.Failure;
+import org.junit.runner.notification.RunNotifier;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.concurrent.*;
 
 public class TestMethodRunner extends BeforeAndAfterRunner {
   private final Object fTest;
@@ -24,11 +19,11 @@ public class TestMethodRunner extends BeforeAndAfterRunner {
 
   public TestMethodRunner(Object test, Method method, RunNotifier notifier, Description description) {
     super(test.getClass(), Before.class, After.class, test);
-    fTest= test;
-    fMethod= method;
-    fNotifier= notifier;
-    fTestIntrospector= new TestIntrospector(test.getClass());
-    fDescription= description;
+    fTest = test;
+    fMethod = method;
+    fNotifier = notifier;
+    fTestIntrospector = new TestIntrospector(test.getClass());
+    fDescription = description;
   }
 
   public void run() {
@@ -38,7 +33,7 @@ public class TestMethodRunner extends BeforeAndAfterRunner {
     }
     fNotifier.fireTestStarted(fDescription);
     try {
-      long timeout= fTestIntrospector.getTimeout(fMethod);
+      long timeout = fTestIntrospector.getTimeout(fMethod);
       if (timeout > 0)
         runWithTimeout(timeout);
       else
@@ -48,19 +43,24 @@ public class TestMethodRunner extends BeforeAndAfterRunner {
     }
   }
 
+  /**
+   * 此处用多线程的目的？
+   *
+   * @param timeout
+   */
   private void runWithTimeout(long timeout) {
-    ExecutorService service= Executors.newSingleThreadExecutor();
-    Callable<Object> callable= new Callable<Object>() {
+    // 多线程
+    ExecutorService service = Executors.newSingleThreadExecutor();
+    Callable<Object> callable = new Callable<Object>() {
       public Object call() throws Exception {
         runMethod();
         return null;
       }
     };
-    Future<Object> result= service.submit(callable);
+    Future<Object> result = service.submit(callable);
     service.shutdown();
     try {
-      boolean terminated= service.awaitTermination(timeout,
-          TimeUnit.MILLISECONDS);
+      boolean terminated = service.awaitTermination(timeout, TimeUnit.MILLISECONDS);
       if (!terminated)
         service.shutdownNow();
       result.get(timeout, TimeUnit.MILLISECONDS); // throws the exception if one occurred during the invocation
@@ -82,11 +82,11 @@ public class TestMethodRunner extends BeforeAndAfterRunner {
       if (expectsException())
         addFailure(new AssertionError("Expected exception: " + expectedException().getName()));
     } catch (InvocationTargetException e) {
-      Throwable actual= e.getTargetException();
+      Throwable actual = e.getTargetException();
       if (!expectsException())
         addFailure(actual);
       else if (isUnexpected(actual)) {
-        String message= "Unexpected exception, expected<" + expectedException().getName() + "> but was<"
+        String message = "Unexpected exception, expected<" + expectedException().getName() + "> but was<"
             + actual.getClass().getName() + ">";
         addFailure(new Exception(message, actual));
       }
@@ -113,7 +113,7 @@ public class TestMethodRunner extends BeforeAndAfterRunner {
   }
 
   private boolean isUnexpected(Throwable exception) {
-    return ! expectedException().isAssignableFrom(exception.getClass());
+    return !expectedException().isAssignableFrom(exception.getClass());
   }
 }
 

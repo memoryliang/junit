@@ -12,9 +12,9 @@ import java.lang.annotation.Target;
  * with <code>@BeforeClass</code> causes it to be run once before any of
  * the test methods in the class. The <code>@BeforeClass</code> methods of superclasses
  * will be run before those the current class.
- * <p>
+ * <p/>
  * For example:<br>
- *
+ * <p/>
  * <code>
  * public class Example {<br>
  * &nbsp;&nbsp;@BeforeClass public static void onlyOnce() {<br>
@@ -28,7 +28,8 @@ import java.lang.annotation.Target;
  * &nbsp;&nbsp;}<br>
  * }<br>
  * </code>
- * @see org.junit.AfterClass
+ *
+ * @see AfterClass
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)

@@ -15,7 +15,7 @@ public abstract class Filter {
   /**
    * A null <code>Filter</code> that passes all tests through.
    */
-  public static Filter ALL= new Filter() {
+  public static Filter ALL = new Filter() {
     @Override
     public boolean shouldRun(Description description) {
       return true;
@@ -36,12 +36,13 @@ public abstract class Filter {
   /**
    * Invoke with a <code>Runner</code> to cause all tests it intends to run
    * to first be checked with the filter. Only those that pass the filter will be run.
+   *
    * @param runner the runner to be filtered by the receiver
    * @throws NoTestsRemainException if the receiver removes all tests
    */
   public void apply(Runner runner) throws NoTestsRemainException {
     if (runner instanceof Filterable) {
-      Filterable filterable= (Filterable)runner;
+      Filterable filterable = (Filterable) runner;
       filterable.filter(this);
     }
   }

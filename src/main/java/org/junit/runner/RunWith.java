@@ -1,12 +1,9 @@
 package org.junit.runner;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 //TODO add simple example
+
 /**
  * When a class is annotated with <code>@RunWith</code> or extends a class annotated with
  * <code>@RunWith</code>,

@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
  * methods are guaranteed to run even if a {@link org.junit.BeforeClass} method throws an
  * exception. The <code>@AfterClass</code> methods declared in superclasses will be run after those of the current
  * class.
- * <p>
+ * <p/>
  * Here is a simple example:<br>
  * <code>
  * public class Example {<br>

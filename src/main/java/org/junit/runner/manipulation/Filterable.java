@@ -8,6 +8,7 @@ public interface Filterable {
 
   /**
    * Remove tests that don't pass <code>filter</code>.
+   *
    * @param filter the filter to apply
    * @throws NoTestsRemainException if all tests are filtered out
    */

@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
  * that are also annotated with <code>@Ignore</code> will not be executed as tests. Native JUnit 4 test runners
  * should report the number of ignored tests along with the number of tests that ran and the
  * number of tests that failed.
- * <p>
+ * <p/>
  * For example:<br>
  * <code>
  * &nbsp;&nbsp;@Ignore @Test public void something() { ...<br>
@@ -19,7 +19,6 @@ import java.lang.annotation.Target;
  * <code>
  * &nbsp;&nbsp;@Ignore("not ready yet") @Test public void something() { ...<br>
  * </code>
- *
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
